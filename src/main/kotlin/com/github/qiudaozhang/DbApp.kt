@@ -15,11 +15,13 @@
  */
 package com.github.qiudaozhang
 
-/**
- * 数据库产品类型
- * @author qiudaozhang
- *
- */
-enum class DbType {
-    MYSQL,
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+
+@SpringBootApplication
+open class DbApp {
+}
+
+fun main(args:Array<String>) {
+    SpringApplication.run(DbApp::class.java,*args)
 }

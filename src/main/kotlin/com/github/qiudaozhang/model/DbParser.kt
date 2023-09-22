@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.qiudaozhang
+package com.github.qiudaozhang.model
 
 import org.apache.commons.dbutils.DbUtils
 import java.sql.Connection
@@ -40,6 +40,32 @@ class DbParser {
         this.url = url
         this.dbName = dbName
         DbUtils.loadDriver(driverName)
+    }
+
+
+    fun ok(): Boolean {
+
+        var conn:Connection?=null
+        try {
+            conn = getConnection()
+            // 还要检查是否有这个数据库
+            val logs = conn.metaData.catalogs
+            while (logs.next()){
+                val databaseName: String = logs.getString("TABLE_CAT")
+                if(databaseName == dbName){
+                    return true
+                }
+
+            }
+            return false
+        } catch (e: Exception) {
+            return false
+        } finally {
+            conn?.let{
+                DbUtils.close(conn)
+            }
+        }
+
     }
 
 

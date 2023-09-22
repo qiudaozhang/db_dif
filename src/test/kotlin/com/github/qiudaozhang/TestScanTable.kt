@@ -1,5 +1,7 @@
 package com.github.qiudaozhang
 
+import com.github.qiudaozhang.model.Database
+import com.github.qiudaozhang.model.DbParser
 import org.junit.jupiter.api.Test
 import java.io.File
 

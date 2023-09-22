@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.qiudaozhang
+package com.github.qiudaozhang.controller
 
-/**
- *  @author qiudaozhang
- *   2023-9-22
- * dif常量定义
- */
-interface DifConst {
-    companion object{
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
 
-        const val COMMENT_SQL = "--\r\n"
-        const val NEW_LINE = "\r\n"
+@Controller
+class IndexController {
+
+    @GetMapping(value = ["/"])
+    fun index():String{
+//        return "static/index"
+        return "static/index.html"
     }
 }
