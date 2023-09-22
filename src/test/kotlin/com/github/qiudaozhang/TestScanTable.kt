@@ -8,18 +8,17 @@ import java.io.File
 class TestScanTable {
 
 
-    val fromUsername = "xx"
-    val fromPassword = "xx"
-    val fromDbName = "xx"
-    val fromUrl = "jdbc:mysql://localhost:3306/xx"
+    val fromUsername = "root"
+    val fromPassword = "root"
+    val fromDbName = "rent_from"
+    val fromUrl = "jdbc:mysql://localhost:3306/rent_from"
     val fromDriverName = "com.mysql.cj.jdbc.Driver"
 
-    val toUsername = "xx"
-    val toPassword = "xx"
-    val toDbName = "xx"
-    val toUrl = "jdbc:mysql://localhost:3306/xx"
+    val toUsername = "root"
+    val toPassword = "root"
+    val toDbName = "rent_to"
+    val toUrl = "jdbc:mysql://localhost:3306/rent_to"
     val toDriverName = "com.mysql.cj.jdbc.Driver"
-
     @Test
     fun scanTable() {
         val dp = DbParser(fromUsername, fromPassword, fromDriverName, fromUrl, fromDbName)
