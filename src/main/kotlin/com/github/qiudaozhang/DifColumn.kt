@@ -16,21 +16,21 @@
 package com.github.qiudaozhang
 
 /**
+ * @author qiudaozhang
  * Dif列结构定义
  */
 data class DifColumn(
-    val tableName:String,
-    val newColumns:List<Column>,
-    val updateColumns:List<Pair<Column,Column>>,
-    val deleteColumns:List<Column>,
-)
-{
+    val tableName: String,
+    val newColumns: List<Column>,
+    val updateColumns: List<Pair<Column, Column>>,
+    val deleteColumns: List<Column>,
+) {
 
 
     /**
      * 全SQL
      */
-    fun fullSQL():String{
+    fun fullSQL(): String {
         return updateColumnsSql() + DifConst.NEW_LINE + newColumnsSql()
     }
 
@@ -38,37 +38,41 @@ data class DifColumn(
     /**
      * 获取更新列的SQL脚本
      */
-    fun updateColumnsSql():String{
+    fun updateColumnsSql(): String {
         val columnSqls = mutableListOf<String>()
-        updateColumns.forEach {
-            (s,e)->
+        updateColumns.forEach { (from, to) ->
             val sqls = mutableListOf<String>()
-            sqls.add(" alter table ${tableName} change ${e.name} ")
-            if(e.length > 0){
-                sqls.add(" ${e.type} ")
-            } else {
-                sqls.add(" ${e.type}(${e.length}) ")
-            }
-            if(s.nullable != e.nullable){
-                if(e.nullable){
-                    sqls.add(" not null ")
-                } else{
-                    sqls.add(" null ")
+            sqls.add(" ALTER TABLE ${tableName} CHANGE `${from.name}` `${from.name}` ")
+            sqls.add(" ${from.type} ")
+            if (from.length > 0) {
+                if (from.type == "DECIMAL") {
+                    sqls.add(" (${from.length},${from.digital}) ")
+                } else {
+                    if (from.type != "JSON") {
+                        sqls.add(" (${from.length}) ")
+                    }
                 }
             }
-            e.defaultValue?.let{
-                sqls.add(" default '${e.defaultValue}' ")
+            if (from.nullable != to.nullable) {
+                if (from.nullable) {
+                    sqls.add(" NOT NULL ")
+                } else {
+                    sqls.add(" NULL ")
+                }
+            }
+            from.defaultValue?.let {
+                sqls.add(" DEFAULT '${from.defaultValue}' ")
             }
 
-            if(s.comment != e.comment){
-                sqls.add(" comment '${e.comment}' ")
+            if (from.comment != to.comment) {
+                sqls.add(" COMMENT '${from.comment}' ")
             }
             sqls.add(" ; ")
             val cs = sqls.joinToString("")
             columnSqls.add(cs)
         }
 
-        if(columnSqls.isNotEmpty()){
+        if (columnSqls.isNotEmpty()) {
             return columnSqls.joinToString(DifConst.NEW_LINE)
         }
 
@@ -79,32 +83,35 @@ data class DifColumn(
     /**
      * 新列生成SQL语句
      */
-    fun newColumnsSql():String{
+    fun newColumnsSql(): String {
         val columnSqls = mutableListOf<String>()
-        newColumns.forEach {
-            nc->
+        newColumns.forEach { nc ->
             val sqls = mutableListOf<String>()
-            sqls.add(" alter table ${tableName} add ${nc.name} ")
-            if(nc.length > 0){
-                sqls.add(" ${nc.type} ")
-            } else {
-                sqls.add(" ${nc.type}(${nc.length}) ")
+            sqls.add(" ALTER TABLE ${tableName} ADD `${nc.name}` ${nc.type} ")
+            if (nc.length > 0) {
+                if (nc.type == "DECIMAL") {
+                    sqls.add(" (${nc.length},${nc.digital}) ")
+                } else {
+                    if (nc.type != "JSON") {
+                        sqls.add(" (${nc.length}) ")
+                    }
+                }
             }
-            if(!nc.nullable){
-                sqls.add(" not null ")
+            if (!nc.nullable) {
+                sqls.add(" NOT NULL ")
             }
-            nc.defaultValue?.let{
-                sqls.add(" default '${nc.defaultValue}' ")
+            nc.defaultValue?.let {
+                sqls.add(" DEFAULT '${nc.defaultValue}' ")
             }
 
-            if(nc.comment.isEmpty()){
-             sqls.add(" comment '${nc.comment}' ")
+            if (nc.comment.isNotEmpty()) {
+                sqls.add(" COMMENT '${nc.comment}' ")
             }
             sqls.add(" ; ")
             val cs = sqls.joinToString("")
             columnSqls.add(cs)
         }
-        if(columnSqls.isNotEmpty()){
+        if (columnSqls.isNotEmpty()) {
             return columnSqls.joinToString(DifConst.NEW_LINE)
         }
 

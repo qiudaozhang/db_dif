@@ -1,17 +1,3 @@
-# db_dif
-数据库差异项目，避免上线数据库DDL不对导致bug
-
-# 开发目标
-
-- 能够自动处理新增的表
-- 能够处理无冲突的表的变动
-- 能够标记无法自动处理表，以便单独关注这些敏感表的变动
-
-
-# 使用case
-
-
-```kotlin 
 package com.github.qiudaozhang
 
 import org.junit.jupiter.api.Test
@@ -59,4 +45,3 @@ class TestScanTable {
     }
 
 }
-```

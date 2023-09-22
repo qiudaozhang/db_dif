@@ -16,14 +16,10 @@
 package com.github.qiudaozhang
 
 /**
- *  @author qiudaozhang
- *   2023-9-22
- * dif常量定义
+ * 数据库产品类型
+ * @author qiudaozhang
+ *
  */
-interface DifConst {
-    companion object{
-
-        const val COMMENT_SQL = "--\r\n"
-        const val NEW_LINE = "\r\n"
-    }
+enum class DbType {
+    MYSQL,
 }

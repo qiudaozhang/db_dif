@@ -16,6 +16,8 @@
 package com.github.qiudaozhang
 
 /**
+ * @author qiudaozhang
+ * 2023-9-22
  * 列定义
  */
 data class Column(
@@ -23,45 +25,56 @@ data class Column(
     val type: String, // 列的类型
     val length: Int = 0, // 长度，假设有的话
     val comment: String = "", // 注释
-    val nullable:Boolean = true,// 是否允许空
-    val defaultValue:Any? = null,
-    val primary:Boolean = false, // 是否是主键的一部分
-    var sort:Int = 1 , // 列的序号 预留
-    val autoIncrement:Boolean = false , //  是否自增
-    ){
+    val nullable: Boolean = true,// 是否允许空
+    val defaultValue: Any? = null,
+    val primary: Boolean = false, // 是否是主键的一部分
+    var sort: Int = 1, // 列的序号 预留
+    val autoIncrement: Boolean = false, //  是否自增
+    val digital: Int = 0, // 如果是decimal，可能有
+) {
 
 
     // 比较两个是否是相同的
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (this === other) return true
-        if(other !is Column){
+        if (other !is Column) {
             return false
         }
         return (name == other.name) && (type == other.type)
                 && (comment == other.comment)
                 && (primary == other.primary)
+                && (length == other.length)
+                && (digital == other.digital)
                 && (nullable == other.nullable)
     }
 
 
-    fun sqlLine():String{
+    fun columnSql(): String {
         val worlds = mutableListOf<String>()
-        worlds.add(" ${name} ")
+        worlds.add(" `${name}` ")
         worlds.add(" ${type} ")
-        if(length > 0){
-            worlds.add("(${length})")
+        if (length > 0) {
+            if (type == "DECIMAL") {
+                worlds.add("(${length},${digital})")
+            } else {
+
+                if (type != "JSON") {
+                    worlds.add("(${length})")
+                }
+            }
+
         }
-        if(nullable){
+        if (nullable) {
             worlds.add(" null ")
         } else {
             worlds.add(" not null ")
         }
-        if(!comment.isNullOrEmpty()){
+        if (comment.isNotEmpty()) {
             worlds.add(" comment '${comment}' ")
         }
         worlds.add(",")
-        return  worlds.joinToString("")
+        return worlds.joinToString("")
     }
 }
 
